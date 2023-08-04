@@ -7,10 +7,7 @@ app.use((res, req, next) => {
     next();
 });
 
-const routes = require('./routes');
-app.use('/', routes);
-
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-    console.log(`Express server listening on port ${PORT}`);
+    console.log(`Bot working on port ${PORT}`);
 });
