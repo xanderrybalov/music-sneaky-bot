@@ -1,13 +1,22 @@
-const express = require('express');
-const app = express();
-const bot = require('./bot');
+const { Telegraf } = require('telegraf');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
+const downloader = require('./utils/downloader');
+require('dotenv').config();
 
-app.use((res, req, next) => {
-    req.bot = bot;
-    next();
+ffmpeg.setFfmpegPath(ffmpegPath);
+
+const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
+
+bot.start((ctx) => {
+    ctx.reply(
+        'Вітаю! Щоб скачати аудіо з YouTube, просто надішліть мені посилання на відео.'
+    );
 });
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => {
-    console.log(`Bot working on port ${PORT}`);
+bot.on('text', (ctx) => {
+    const messageText = ctx.update.message.text;
+    downloader(messageText, ctx);
 });
+
+bot.launch();
