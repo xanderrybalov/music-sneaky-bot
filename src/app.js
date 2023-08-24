@@ -10,13 +10,24 @@ const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
 bot.start((ctx) => {
     ctx.reply(
-        'Вітаю! Щоб скачати аудіо з YouTube, просто надішліть мені посилання на відео.'
+        'Welcome! To download audio from YouTube, simply send me a link to a video.'
     );
 });
 
-bot.on('text', (ctx) => {
+bot.on('text', async (ctx) => {
     const messageText = ctx.update.message.text;
-    downloader(messageText, ctx);
+
+    try {
+        await downloader(messageText, ctx);
+    } catch (err) {
+        console.error('Error:', err);
+
+        ctx.reply(
+            'An error occurred while processing your request. Please try again later.'
+        );
+    }
 });
 
-bot.launch();
+bot.launch().catch((err) => {
+    console.error('Error starting bot:', err);
+});

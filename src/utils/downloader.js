@@ -2,17 +2,27 @@ const ytdl = require('ytdl-core');
 
 const downloader = async function (url, ctx) {
     try {
+        // Validate the URL before using ytdl.validateURL
+        if (!ytdl.validateURL(url)) {
+            throw new Error('Invalid URL');
+        }
+
+        // Get video information
         const videoInfo = await ytdl.getInfo(url);
         const titleVideo = videoInfo.videoDetails.title;
-        const downloadStream = await ytdl(url, { filter: 'audioonly' });
-        ctx.replyWithAudio({
-            source: downloadStream,
-            filename: `${titleVideo}.mp3`,
-        });
+
+        // Get the audio download stream
+        const downloadStream = ytdl(url, { filter: 'audioonly' });
+
+        // Send the audio file to the user
+        ctx.replyWithAudio(
+            { source: downloadStream, filename: `${titleVideo}.mp3` },
+            { title: titleVideo }
+        );
     } catch (err) {
         console.error('Error downloading audio:', err);
         ctx.reply(
-            'Виникла якась помилка, можливо ви вставили невірний url, або ще щось. Якщо чесно мені похуй 😜'
+            'An error occurred while downloading the audio. Please check the URL and try again.'
         );
     }
 };
