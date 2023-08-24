@@ -1,6 +1,7 @@
 const ytdl = require('ytdl-core');
 
-const downloader = async function (url, ctx) {
+// Define an async function for downloading audio
+const Downloader = async function (url, ctx) {
     try {
         // Validate the URL before using ytdl.validateURL
         if (!ytdl.validateURL(url)) {
@@ -27,4 +28,5 @@ const downloader = async function (url, ctx) {
     }
 };
 
-module.exports = downloader;
+// Export the Downloader function
+module.exports = Downloader;
